@@ -6,6 +6,7 @@ import {type Registration, type RegistrationOptions, Registry} from "./registry"
 import {Scope} from "./scope";
 import {type Constructor, isConstructor, type Token, type TokenList} from "./token";
 import {KeyedStack} from "./utils/keyed-stack";
+import {WeakValueMap} from "./utils/weak-value-map";
 
 export interface ContainerOptions {
   parent?: Container;
@@ -186,8 +187,8 @@ export class Container {
         container: this,
         resolution: {
           stack: new KeyedStack(),
-          instances: new Map(),
-          dependents: new Map(),
+          instances: new WeakValueMap(),
+          dependents: new WeakValueMap(),
         },
       }, () => this.getScopedInstance(registration, instantiate));
     }

@@ -8,8 +8,8 @@ export class KeyedStack<K, V> {
     return this.keys.has(key);
   }
 
-  peek() {
-    const entry = this.entries.at(-1);
+  peek(n = 0) {
+    const entry = this.entries.at(-(n + 1));
     return entry?.value;
   }
 
