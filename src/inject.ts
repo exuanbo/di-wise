@@ -52,9 +52,9 @@ export const Injector: Type<Injector> = /*@__PURE__*/ Build(function Injector() 
   const dependentProvider = dependentFrame.provider;
   const dependentRef = context.resolution.dependents.get(dependentProvider);
 
-  const withCurrentContext = <R>(callback: () => R) => {
+  const withCurrentContext = <R>(fn: () => R) => {
     if (useInjectionContext()) {
-      return callback();
+      return fn();
     }
     return withInjectionContext(context, () => {
       invariant(!context.resolution.stack.has(dependentProvider));
@@ -62,7 +62,7 @@ export const Injector: Type<Injector> = /*@__PURE__*/ Build(function Injector() 
       if (dependentRef)
         context.resolution.dependents.set(dependentProvider, dependentRef);
       try {
-        return callback();
+        return fn();
       }
       finally {
         context.resolution.dependents.delete(dependentProvider);
