@@ -57,7 +57,6 @@ export const Injector: Type<Injector> = /*@__PURE__*/ Build(function Injector() 
       return fn();
     }
     return withInjectionContext(context, () => {
-      invariant(!context.resolution.stack.has(dependentProvider));
       context.resolution.stack.push(dependentProvider, dependentFrame);
       if (dependentRef)
         context.resolution.dependents.set(dependentProvider, dependentRef);
