@@ -1,12 +1,10 @@
 import {assert, expectNever} from "./errors";
-import {type ResolvedScope, useInjectionContext, withInjectionContext} from "./injection-context";
+import {createResolution, useInjectionContext, withInjectionContext} from "./injection-context";
 import {getMetadata} from "./metadata";
 import {isClassProvider, isFactoryProvider, isValueProvider, type Provider} from "./provider";
 import {type Registration, type RegistrationOptions, Registry} from "./registry";
 import {Scope} from "./scope";
 import {type Constructor, isConstructor, type Token, type TokenList} from "./token";
-import {KeyedStack} from "./utils/keyed-stack";
-import {WeakValueMap} from "./utils/weak-value-map";
 
 export interface ContainerOptions {
   parent?: Container;
@@ -185,11 +183,7 @@ export class Container {
     if (!context || context.container !== this) {
       return withInjectionContext({
         container: this,
-        resolution: {
-          stack: new KeyedStack(),
-          instances: new WeakValueMap(),
-          dependents: new WeakValueMap(),
-        },
+        resolution: createResolution(),
       }, () => this.getScopedInstance(registration, instantiate));
     }
 
@@ -234,7 +228,7 @@ export class Container {
     }
   }
 
-  private resolveScope(scope = this.defaultScope): ResolvedScope {
+  private resolveScope(scope = this.defaultScope) {
     let resolvedScope = scope;
     if (resolvedScope == Scope.Inherited) {
       const context = useInjectionContext();
