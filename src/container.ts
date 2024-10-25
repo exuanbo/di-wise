@@ -109,7 +109,7 @@ export function createContainer({
       for (const token of tokens) {
         const registration = registry.get(token);
         if (registration) {
-          return createInstance(registration);
+          return instantiateProvider(registration);
         }
         if (isConstructor(token)) {
           const Class = token;
@@ -118,7 +118,7 @@ export function createContainer({
             container.register(Class);
             return container.resolve(Class);
           }
-          return construct(Class);
+          return instantiateClass(Class);
         }
       }
       throwUnregisteredError(tokens);
@@ -129,7 +129,7 @@ export function createContainer({
         const registrations = registry.getAll(token);
         if (registrations) {
           return registrations
-            .map((registration) => createInstance(registration))
+            .map((registration) => instantiateProvider(registration))
             .filter((instance) => instance != null);
         }
         if (isConstructor(token)) {
@@ -139,7 +139,7 @@ export function createContainer({
             container.register(Class);
             return [container.resolve(Class)];
           }
-          return [construct(Class)];
+          return [instantiateClass(Class)];
         }
       }
       throwUnregisteredError(tokens);
@@ -148,23 +148,23 @@ export function createContainer({
 
   return container;
 
-  function construct<T extends object>(Class: Constructor<T>): T {
+  function instantiateClass<T extends object>(Class: Constructor<T>): T {
     const metadata = getMetadata(Class);
     const provider = metadata.provider;
     const options = {scope: resolveScope(metadata.scope)};
     assert(options.scope != Scope.Container, `unregistered class ${Class.name} cannot be resolved in container scope`);
-    return getScopedInstance({provider, options}, () => new Class());
+    return resolveScopedInstance({provider, options}, () => new Class());
   }
 
-  function createInstance<T>(registration: Registration<T>): T {
+  function instantiateProvider<T>(registration: Registration<T>): T {
     const provider = registration.provider;
     if (isClassProvider(provider)) {
       const Class = provider.useClass;
-      return getScopedInstance(registration, () => new Class());
+      return resolveScopedInstance(registration, () => new Class());
     }
     if (isFactoryProvider(provider)) {
       const factory = provider.useFactory;
-      return getScopedInstance(registration, factory);
+      return resolveScopedInstance(registration, factory);
     }
     if (isValueProvider(provider)) {
       const value = provider.useValue;
@@ -173,14 +173,14 @@ export function createContainer({
     expectNever(provider);
   }
 
-  function getScopedInstance<T>(registration: Registration<T>, instantiate: () => T): T {
+  function resolveScopedInstance<T>(registration: Registration<T>, instantiate: () => T): T {
     const context = useInjectionContext();
 
     if (!context || context.container !== container) {
       return withInjectionContext({
         container,
         resolution: createResolution(),
-      }, () => getScopedInstance(registration, instantiate));
+      }, () => resolveScopedInstance(registration, instantiate));
     }
 
     const provider = registration.provider;
