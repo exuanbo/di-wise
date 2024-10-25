@@ -124,10 +124,10 @@ describe("Container", () => {
     class Wizard {}
 
     expect(() => container.resolve(Wizard)).toThrowErrorMatchingInlineSnapshot(
-      `[Error: unregistered token Wizard cannot be resolved in container scope]`,
+      `[Error: unregistered class Wizard cannot be resolved in container scope]`,
     );
     expect(() => container.resolveAll(Wizard)).toThrowErrorMatchingInlineSnapshot(
-      `[Error: unregistered token Wizard cannot be resolved in container scope]`,
+      `[Error: unregistered class Wizard cannot be resolved in container scope]`,
     );
   });
 

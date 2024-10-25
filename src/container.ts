@@ -152,9 +152,7 @@ export function createContainer({
     const metadata = getMetadata(Class);
     const provider = metadata.provider;
     const options = {scope: resolveScope(metadata.scope)};
-    if (options.scope == Scope.Container) {
-      throw new Error(`unregistered token ${Class.name} cannot be resolved in container scope`);
-    }
+    assert(options.scope != Scope.Container, `unregistered class ${Class.name} cannot be resolved in container scope`);
     return getScopedInstance({provider, options}, () => new Class());
   }
 
