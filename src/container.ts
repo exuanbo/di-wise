@@ -7,37 +7,35 @@ import {Scope} from "./scope";
 import {type Constructor, isConstructor, type Token, type TokenList, Type} from "./token";
 
 export interface ContainerOptions {
-  parent?: Container;
-  defaultScope?: Scope;
   autoRegister?: boolean;
+  defaultScope?: Scope;
+  parent?: Container;
 }
 
 export interface Container {
-  readonly parent?: Container;
-  readonly registry: Registry;
-
   autoRegister: boolean;
   defaultScope: Scope;
-
+  readonly parent?: Container;
+  readonly registry: Registry;
+  clearCache(): void;
   createChild(): Container;
   getCached<Value>(token: Token<Value>): Value | undefined;
-  clearCache(): void;
-  resetRegistry(): void;
   isRegistered<Value>(token: Token<Value>): boolean;
-  register<Instance extends object>(Class: Constructor<Instance>): Container;
-  register<Value>(token: Token<Value>, provider: Provider<Value>, options?: RegistrationOptions): Container;
-  unregister<Value>(token: Token<Value>): Container;
+  register<Instance extends object>(Class: Constructor<Instance>): this;
+  register<Value>(token: Token<Value>, provider: Provider<Value>, options?: RegistrationOptions): this;
+  resetRegistry(): void;
   resolve<Values extends unknown[]>(...tokens: TokenList<Values>): Values[number];
   resolveAll<Values extends unknown[]>(...tokens: TokenList<Values>): NonNullable<Values[number]>[];
+  unregister<Value>(token: Token<Value>): this;
 }
 
 export const Container: Type<Container> = Type("Container");
 
 export function createContainer(options?: ContainerOptions): Container;
 export function createContainer({
-  parent,
   autoRegister = false,
   defaultScope = Scope.Inherited,
+  parent,
 }: ContainerOptions = {}) {
   const registry = new Registry(parent?.registry);
 
@@ -50,9 +48,9 @@ export function createContainer({
 
     createChild() {
       return createContainer({
-        parent: container,
-        defaultScope: container.defaultScope,
         autoRegister: container.autoRegister,
+        defaultScope: container.defaultScope,
+        parent: container,
       });
     },
 
@@ -83,6 +81,11 @@ export function createContainer({
       return registry.has(token);
     },
 
+    unregister(token) {
+      registry.map.delete(token);
+      return container;
+    },
+
     register<Value>(
       ...args:
         | [Constructor<Value & object>]
@@ -109,11 +112,6 @@ export function createContainer({
         }
         registry.set(token, {provider, options});
       }
-      return container;
-    },
-
-    unregister(token) {
-      registry.map.delete(token);
       return container;
     },
 
