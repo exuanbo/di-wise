@@ -13,7 +13,7 @@ export type RegistrationMap = Omit<
 export interface Registration<T = any> {
   options?: RegistrationOptions;
   instance?: InstanceRef<T>;
-  readonly provider: Provider<T>;
+  provider: Provider<T>;
 }
 
 export interface RegistrationOptions {
@@ -23,9 +23,9 @@ export interface RegistrationOptions {
 export class Registry {
   private _map = new Map<Token, Registration[]>();
 
-  readonly map: RegistrationMap = this._map;
+  map: RegistrationMap = this._map;
 
-  readonly parent?: Registry;
+  parent?: Registry;
 
   constructor(parent?: Registry) {
     this.parent = parent;

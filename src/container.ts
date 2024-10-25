@@ -13,10 +13,7 @@ export interface ContainerOptions {
 }
 
 export interface Container {
-  autoRegister: boolean;
-  defaultScope: Scope;
-  readonly parent?: Container;
-  readonly registry: Registry;
+  get registry(): Registry;
   clearCache(): void;
   createChild(): Container;
   getCached<Value>(token: Token<Value>): Value | undefined;
@@ -38,16 +35,14 @@ export function createContainer({
   const registry = new Registry(parent?.registry);
 
   const container: Container = {
-    autoRegister,
-    defaultScope,
-
-    get parent() {return parent;},
-    get registry() {return registry;},
+    get registry() {
+      return registry;
+    },
 
     createChild() {
       return createContainer({
-        autoRegister: container.autoRegister,
-        defaultScope: container.defaultScope,
+        autoRegister,
+        defaultScope,
         parent: container,
       });
     },
@@ -119,7 +114,7 @@ export function createContainer({
         if (isConstructor(token)) {
           const Class = token;
           const metadata = getMetadata(Class);
-          if (metadata.autoRegister ?? container.autoRegister) {
+          if (metadata.autoRegister ?? autoRegister) {
             container.register(Class);
             return container.resolve(Class);
           }
@@ -140,7 +135,7 @@ export function createContainer({
         if (isConstructor(token)) {
           const Class = token;
           const metadata = getMetadata(Class);
-          if (metadata.autoRegister ?? container.autoRegister) {
+          if (metadata.autoRegister ?? autoRegister) {
             container.register(Class);
             return [container.resolve(Class)];
           }
@@ -231,7 +226,7 @@ export function createContainer({
     }
   }
 
-  function resolveScope(scope = container.defaultScope) {
+  function resolveScope(scope = defaultScope) {
     let resolvedScope = scope;
     if (resolvedScope == Scope.Inherited) {
       const context = useInjectionContext();

@@ -20,9 +20,6 @@ describe("Container", () => {
     container.register(Env, {useValue: "production"});
 
     const child = container.createChild();
-    expect(child.autoRegister).toBeTruthy();
-    expect(child.defaultScope).toBe(Scope.Container);
-
     expect(child.isRegistered(Env)).toBe(true);
     expect(child.resolve(Env)).toBe("production");
     expect(child.resolveAll(Env)).toEqual(["production"]);
