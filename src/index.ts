@@ -1,5 +1,5 @@
 export type {ContainerOptions} from "./container";
-export {Container} from "./container";
+export {Container, createContainer} from "./container";
 export type {ClassDecorator, ClassFieldDecorator, ClassFieldInitializer} from "./decorators";
 export {AutoRegister, Inject, Injectable, InjectAll, Scoped} from "./decorators";
 export {inject, injectAll, injectBy, Injector} from "./inject";

@@ -1,10 +1,10 @@
 import {afterEach, describe, expect, it} from "vitest";
 
-import {AutoRegister, Build, Container, inject, Injectable, InjectAll, Scope, Scoped, Type, Value} from "..";
+import {AutoRegister, Build, Container, createContainer, inject, Injectable, InjectAll, Scope, Scoped, Type, Value} from "..";
 import {useInjectionContext} from "../injection-context";
 
 describe("Container", () => {
-  const container = new Container();
+  const container = createContainer();
 
   afterEach(() => {
     container.resetRegistry();
@@ -21,7 +21,7 @@ describe("Container", () => {
   });
 
   it("should handle hierarchical injection", () => {
-    const container = new Container({
+    const container = createContainer({
       defaultScope: Scope.Container,
       autoRegister: true,
     });
@@ -57,7 +57,7 @@ describe("Container", () => {
   });
 
   it("should reset registry", () => {
-    const container = new Container({
+    const container = createContainer({
       defaultScope: Scope.Container,
       autoRegister: true,
     });
@@ -177,7 +177,7 @@ describe("Container", () => {
   });
 
   it("should resolve all tokens with a class fallback", () => {
-    const container = new Container({
+    const container = createContainer({
       defaultScope: Scope.Container,
       autoRegister: true,
     });

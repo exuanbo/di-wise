@@ -1,10 +1,10 @@
 import {afterEach, describe, expect, it, vi} from "vitest";
 
-import {Build, Container, Inject, inject, injectAll, Injector, Scope, Scoped} from "..";
+import {Build, createContainer, Inject, inject, injectAll, Injector, Scope, Scoped} from "..";
 import {useInjectionContext} from "../injection-context";
 
 describe("inject", () => {
-  const container = new Container();
+  const container = createContainer();
 
   afterEach(() => {
     container.resetRegistry();
@@ -102,7 +102,7 @@ describe("inject", () => {
     });
 
     it("should have context of the dependent", () => {
-      const container = new Container({
+      const container = createContainer({
         autoRegister: true,
       });
 
