@@ -4,7 +4,7 @@ import {getMetadata} from "./metadata";
 import {isClassProvider, isFactoryProvider, isValueProvider, type Provider} from "./provider";
 import {type Registration, type RegistrationOptions, Registry} from "./registry";
 import {Scope} from "./scope";
-import {type Constructor, isConstructor, type Token, type TokenList, Type} from "./token";
+import {type Constructor, isConstructor, type Token, type TokenList} from "./token";
 
 export interface ContainerOptions {
   autoRegister?: boolean;
@@ -28,8 +28,6 @@ export interface Container {
   resolveAll<Values extends unknown[]>(...tokens: TokenList<Values>): NonNullable<Values[number]>[];
   unregister<Value>(token: Token<Value>): this;
 }
-
-export const Container: Type<Container> = Type("Container");
 
 export function createContainer(options?: ContainerOptions): Container;
 export function createContainer({
@@ -70,15 +68,12 @@ export function createContainer({
       }
     },
 
-    resetRegistry() {
-      registry.map.clear();
-      registry.set(Container, {
-        provider: {useValue: container},
-      });
-    },
-
     isRegistered(token) {
       return registry.has(token);
+    },
+
+    resetRegistry() {
+      registry.map.clear();
     },
 
     unregister(token) {
@@ -155,10 +150,6 @@ export function createContainer({
       throwUnregisteredError(tokens);
     },
   };
-
-  registry.set(Container, {
-    provider: {useValue: container},
-  });
 
   return container;
 

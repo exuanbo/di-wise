@@ -1,6 +1,6 @@
 import {afterEach, describe, expect, it} from "vitest";
 
-import {AutoRegister, Build, Container, createContainer, inject, Injectable, InjectAll, Scope, Scoped, Type, Value} from "..";
+import {AutoRegister, Build, createContainer, inject, Injectable, InjectAll, Scope, Scoped, Type, Value} from "..";
 import {useInjectionContext} from "../injection-context";
 
 describe("Container", () => {
@@ -8,16 +8,6 @@ describe("Container", () => {
 
   afterEach(() => {
     container.resetRegistry();
-  });
-
-  it("should resolve Container for dynamic injection", () => {
-    expect(container.resolve(Container)).toBe(container);
-
-    container.resetRegistry();
-    expect(container.resolve(Container)).toBe(container);
-
-    const child = container.createChild();
-    expect(child.resolve(Container)).toBe(child);
   });
 
   it("should handle hierarchical injection", () => {
