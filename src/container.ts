@@ -47,19 +47,19 @@ export function createContainer({
       });
     },
 
-    getCached(token) {
-      const registration = registry.get(token);
-      const instanceRef = registration?.instance;
-      if (instanceRef) {
-        return instanceRef.current;
-      }
-    },
-
     clearCache() {
       for (const registrations of registry.map.values()) {
         registrations.forEach(({instance, ...registration}, i) => {
           registrations[i] = registration;
         });
+      }
+    },
+
+    getCached(token) {
+      const registration = registry.get(token);
+      const instanceRef = registration?.instance;
+      if (instanceRef) {
+        return instanceRef.current;
       }
     },
 
