@@ -48,7 +48,7 @@ export function createContainer({
     get parent() {return parent;},
     get registry() {return registry;},
 
-    createChild(): Container {
+    createChild() {
       return createContainer({
         parent: container,
         defaultScope: container.defaultScope,
@@ -56,7 +56,7 @@ export function createContainer({
       });
     },
 
-    getCached<Value>(token: Token<Value>): Value | undefined {
+    getCached(token) {
       const registration = registry.get(token);
       const instanceRef = registration?.instance;
       if (instanceRef) {
@@ -64,7 +64,7 @@ export function createContainer({
       }
     },
 
-    clearCache(): void {
+    clearCache() {
       for (const registrations of registry.map.values()) {
         registrations.forEach(({instance, ...registration}, i) => {
           registrations[i] = registration;
@@ -72,14 +72,14 @@ export function createContainer({
       }
     },
 
-    resetRegistry(): void {
+    resetRegistry() {
       registry.map.clear();
       registry.set(Container, {
         provider: {useValue: container},
       });
     },
 
-    isRegistered<Value>(token: Token<Value>): boolean {
+    isRegistered(token) {
       return registry.has(token);
     },
 
@@ -87,7 +87,7 @@ export function createContainer({
       ...args:
         | [Constructor<Value & object>]
         | [Token<Value>, Provider<Value>, RegistrationOptions?]
-    ): Container {
+    ) {
       if (args.length == 1) {
         const [Class] = args;
         const metadata = getMetadata(Class);
@@ -112,7 +112,7 @@ export function createContainer({
       return container;
     },
 
-    unregister<Value>(token: Token<Value>): Container {
+    unregister(token) {
       registry.map.delete(token);
       return container;
     },
