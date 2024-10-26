@@ -6,26 +6,131 @@ import {type Registration, type RegistrationOptions, Registry} from "./registry"
 import {Scope} from "./scope";
 import {type Constructor, isConstructor, type Token, type TokenList} from "./token";
 
+/**
+ * Options for creating a container.
+ */
 export interface ContainerOptions {
+  /**
+   * Whether to automatically register a class when resolving it as a token.
+   *
+   * @default false
+   */
   autoRegister?: boolean;
+
+  /**
+   * The default scope for registrations.
+   *
+   * @default Scope.Inherited - "Inherited"
+   */
   defaultScope?: Scope;
+
+  /**
+   * The parent container.
+   *
+   * @default undefined
+   */
   parent?: Container;
 }
 
+/**
+ * The public API of a container.
+ */
 export interface Container {
+  /**
+   * The internal registry for testing and debugging.
+   */
   get registry(): Registry;
+
+  /**
+   * Clears the cached instances with container scope.
+   *
+   * The registered constants with `ValueProvider` are not affected.
+   */
   clearCache(): void;
+
+  /**
+   * Creates a child container with the same configuration.
+   */
   createChild(): Container;
+
+  /**
+   * Gets the cached instance with container scope.
+   *
+   * @template Value - The type of the token.
+   */
   getCached<Value>(token: Token<Value>): Value | undefined;
+
+  /**
+   * Checks if a token is registered in the container or its ancestors.
+   *
+   * @template Value - The type of the token.
+   */
   isRegistered<Value>(token: Token<Value>): boolean;
+
+  /**
+   * Registers a `ClassProvider` with the token of the class itself.
+   *
+   * All the tokens specified in the `@Injectable` decorator are also registered.
+   *
+   * @template Instance - The type of the instance.
+   */
   register<Instance extends object>(Class: Constructor<Instance>): this;
+
+  /**
+   * Registers a provider with a token.
+   *
+   * @template Value - The type of the token and the provider.
+   */
   register<Value>(token: Token<Value>, provider: Provider<Value>, options?: RegistrationOptions): this;
+
+  /**
+   * Removes all registrations from the internal registry.
+   */
   resetRegistry(): void;
+
+  /**
+   * Resolves a token to an instance.
+   *
+   * @template Value - The type of the token.
+   */
+  resolve<Value>(token: Token<Value>): Value;
+
+  /**
+   * Resolves tokens to an instance by checking each token in order until a registered one is found.
+   *
+   * @template Values - Tuple type representing the possible value types
+   */
   resolve<Values extends unknown[]>(...tokens: TokenList<Values>): Values[number];
+
+  /**
+   * Resolves a token to instances of all registered providers.
+   *
+   * The returned array will not contain `null` or `undefined` values.
+   *
+   * @template Value - The type of the token.
+   */
+  resolveAll<Value>(token: Token<Value>): NonNullable<Value>[];
+
+  /**
+   * Resolves tokens to instances of all registered providers by checking each token in order until a registered one is found.
+   *
+   * The returned array will not contain `null` or `undefined` values.
+   *
+   * @template Values - Tuple type representing the possible value types
+   */
   resolveAll<Values extends unknown[]>(...tokens: TokenList<Values>): NonNullable<Values[number]>[];
+
+  /**
+   * Removes a registration from the internal registry.
+   *
+   * @template Value - The type of the token.
+   */
   unregister<Value>(token: Token<Value>): this;
 }
 
+/**
+ * Creates a new container.
+ */
 export function createContainer(options?: ContainerOptions): Container;
 export function createContainer({
   autoRegister = false,

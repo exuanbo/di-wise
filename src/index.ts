@@ -1,3 +1,9 @@
+/**
+ * This module provides all public APIs of `di-wise`.
+ *
+ * @module di-wise
+ */
+
 export type {Container, ContainerOptions} from "./container";
 export {createContainer} from "./container";
 export type {ClassDecorator, ClassFieldDecorator, ClassFieldInitializer} from "./decorators";
