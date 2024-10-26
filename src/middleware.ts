@@ -5,7 +5,7 @@ import type {Container} from "./container";
  *
  * @example
  * ```ts
- * const logger: Middleware = (_container, composer) => {
+ * const logger: Middleware = (composer, _original) => {
  *   composer
  *     .use("resolve", (next) => (...args) => {
  *       console.log("resolve", args);
@@ -19,7 +19,7 @@ import type {Container} from "./container";
  * ```
  */
 export interface Middleware {
-  (container: Container, composer: MiddlewareComposer): void;
+  (composer: MiddlewareComposer, original: Readonly<Container>): void;
 }
 
 /**
@@ -69,6 +69,6 @@ export function applyMiddlewares(container: Container, middlewares: Middleware[]
       return composer;
     },
   };
-  middlewares.forEach((middleware) => middleware(container, composer));
+  middlewares.forEach((middleware) => middleware(composer, {...container}));
   return container;
 }

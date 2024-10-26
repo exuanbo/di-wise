@@ -13,7 +13,7 @@ describe("Middleware", () => {
     const log = vi.fn();
 
     function getLogger(loggerName: string): Middleware {
-      return (_container, composer) => {
+      return (composer) => {
         composer
           .use("resolve", (next) => <T>(token: Token<T>) => {
             log(`[${loggerName}] resolve ${token.name}`);
