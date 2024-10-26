@@ -11,7 +11,7 @@ export {AutoRegister, Inject, Injectable, InjectAll, Scoped} from "./decorators"
 export {inject, injectAll, injectBy, Injector} from "./inject";
 export type {InstanceRef} from "./instance";
 export type {Middleware, MiddlewareComposer} from "./middleware";
-export {applyMiddlewares} from "./middleware";
+export {applyMiddleware} from "./middleware";
 export type {ClassProvider, FactoryProvider, Provider, ValueProvider} from "./provider";
 export type {Registration, RegistrationMap, RegistrationOptions, Registry} from "./registry";
 export {Build, Value} from "./registry";

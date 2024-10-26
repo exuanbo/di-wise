@@ -46,7 +46,7 @@ export interface MiddlewareComposer {
  *
  * @example
  * ```ts
- * const container = applyMiddlewares(
+ * const container = applyMiddleware(
  *   createContainer(),
  *   [A, B],
  * );
@@ -62,7 +62,7 @@ export interface MiddlewareComposer {
  *
  * This allows outer middlewares to wrap and control the behavior of inner middlewares.
  */
-export function applyMiddlewares(container: Container, middlewares: Middleware[]): Container {
+export function applyMiddleware(container: Container, middlewares: Middleware[]): Container {
   const composer: MiddlewareComposer = {
     use(key, wrap) {
       container[key] = wrap(container[key]);
