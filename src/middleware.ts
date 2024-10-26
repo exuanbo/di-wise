@@ -7,13 +7,13 @@ import type {Container} from "./container";
  * ```ts
  * const logger: Middleware = (_container, composer) => {
  *   composer
- *     .use("resolve", (next) => (token) => {
- *       console.log("resolve", token);
- *       return next(token);
+ *     .use("resolve", (next) => (...args) => {
+ *       console.log("resolve", args);
+ *       return next(...args);
  *     })
- *     .use("resolveAll", (next) => (token) => {
- *       console.log("resolveAll", token);
- *       return next(token);
+ *     .use("resolveAll", (next) => (...args) => {
+ *       console.log("resolveAll", args);
+ *       return next(...args);
  *     });
  * };
  * ```
@@ -48,7 +48,7 @@ export interface MiddlewareComposer {
  * ```ts
  * const container = applyMiddlewares(
  *   createContainer(),
- *   [A, B]
+ *   [A, B],
  * );
  * ```
  *
