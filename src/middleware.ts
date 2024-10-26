@@ -4,7 +4,7 @@ import type {Container} from "./container";
  * Middleware function that can be used to extend the container.
  *
  * @example
- * ```typescript
+ * ```ts
  * const logger: Middleware = (_container, composer) => {
  *   composer
  *     .use("resolve", (next) => (token) => {
@@ -28,6 +28,8 @@ export interface Middleware {
 export interface MiddlewareComposer {
   /**
    * Add a middleware function to the composer.
+   *
+   * @template Key - The key of the container method to wrap.
    */
   use<Key extends keyof Container>(
     key: Key,
@@ -40,8 +42,17 @@ export interface MiddlewareComposer {
 /**
  * Apply middleware functions to a container.
  *
- * Middlewares are applied in array order, but execute in reverse order. For example,
- * with `[A, B]`, the execution order will be:
+ * Middlewares are applied in array order, but execute in reverse order.
+ *
+ * @example
+ * ```ts
+ * const container = applyMiddlewares(
+ *   createContainer(),
+ *   [A, B]
+ * );
+ * ```
+ *
+ * The execution order will be:
  *
  * 1. B before
  * 2. A before
