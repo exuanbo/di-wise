@@ -132,6 +132,7 @@ export interface Container {
  * Creates a new container.
  */
 export function createContainer(options?: ContainerOptions): Container;
+
 export function createContainer({
   autoRegister = false,
   defaultScope = Scope.Inherited,
