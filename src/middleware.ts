@@ -5,7 +5,7 @@ import type {Container} from "./container";
  *
  * @example
  * ```ts
- * const logger: Middleware = (composer, _original) => {
+ * const logger: Middleware = (composer, _api) => {
  *   composer
  *     .use("resolve", (next) => (...args) => {
  *       console.log("resolve", args);
@@ -19,7 +19,7 @@ import type {Container} from "./container";
  * ```
  */
 export interface Middleware {
-  (composer: MiddlewareComposer, original: Readonly<Container>): void;
+  (composer: MiddlewareComposer, api: Readonly<Container>): void;
 }
 
 /**
