@@ -20,6 +20,10 @@ Lightweight and flexible dependency injection library for JavaScript and TypeScr
     - [Hierarchical injection](#hierarchical-injection)
     - [Full control over registration and caching](#full-control-over-registration-and-caching)
     - [Various injection scopes](#various-injection-scopes)
+      - [Inherited (default)](#inherited-default)
+      - [Transient](#transient)
+      - [Resolution](#resolution)
+      - [Container](#container)
     - [Flexible token-based injection](#flexible-token-based-injection)
     - [Automatic circular dependency resolution](#automatic-circular-dependency-resolution)
     - [Dynamic injection](#dynamic-injection)
@@ -205,7 +209,7 @@ slytherin.resolve(Spell).cast();  // => 🐍
 - Smart scope resolution for dependencies
 - Configurable default scopes per container
 
-Example:
+Example for singleton pattern:
 
 ```ts
 import {createContainer, Scope} from "di-wise";
@@ -214,11 +218,76 @@ export const singletons = createContainer({
   defaultScope: Scope.Container,
   autoRegister: true,
 });
+
+// Always resolves to the same instance
+const wizard = singletons.resolve(Wizard);
 ```
 
-`Inherited` will be resolved as `Transient` for a top-level dependent.
+#### Inherited (default)
 
-`Resolution` is similar to `Transient`, but the instance will be reused in a single resolution graph.
+Inherits the scope from its dependent. If there is no dependent (top-level resolution), behaves like `Transient`.
+
+<details>
+<summary>Example</summary>
+
+<!-- prettier-ignore -->
+```ts
+import {createContainer, Scope, Scoped} from "di-wise";
+
+@Scoped(Scope.Container)
+class Wizard {
+  wand = inject(Wand);
+}
+
+const container = createContainer();
+container.register(
+  Wand,
+  {useClass: Wand},
+  {scope: Scope.Inherited},
+);
+container.register(Wizard);
+
+// Dependency Wand will be resolved with "Container" scope
+const wizard = container.resolve(Wizard);
+```
+
+</details>
+
+#### Transient
+
+Creates a new instance every time the dependency is requested. No caching occurs.
+
+#### Resolution
+
+Creates one instance per resolution graph. The same instance will be reused within a single dependency resolution, but new instances are created for separate resolutions.
+
+<details>
+<summary>Example</summary>
+
+```ts
+@Scoped(Scope.Resolution)
+class Wand {}
+
+class Inventory {
+  wand = inject(Wand);
+}
+
+class Wizard {
+  inventory = inject(Inventory);
+  wand = inject(Wand);
+}
+
+const container = createContainer();
+const wizard = container.resolve(Wizard);
+
+expect(wizard.inventory.wand).toBe(wizard.wand);
+```
+
+</details>
+
+#### Container
+
+Creates one instance per container (singleton pattern). The instance is cached and reused for all subsequent resolutions within the same container.
 
 ### Flexible token-based injection
 
@@ -302,6 +371,8 @@ wizard.getWand(); // => Wand
 The injector maintains the same resolution context as its injection point, allowing proper handling of scopes and circular dependencies:
 
 ```ts
+import {createContainer, inject, Injector} from "di-wise";
+
 class Wand {
   owner = inject(Wizard);
 }
@@ -314,9 +385,10 @@ class Wizard {
   }
 }
 
+const container = createContainer();
 const wizard = container.resolve(Wizard);
-const wand = wizard.getWand();
 
+const wand = wizard.getWand();
 expect(wand.owner).toBe(wizard);
 ```
 
