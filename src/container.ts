@@ -35,6 +35,11 @@ export interface ContainerOptions {
  */
 export interface Container {
   /**
+   * @internal
+   */
+  api?: Readonly<Container>;
+
+  /**
    * The underlying registry.
    */
   get registry(): Registry;

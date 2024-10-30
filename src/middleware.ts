@@ -67,6 +67,7 @@ export function applyMiddleware(container: Container, middlewares: Middleware[])
       return composer;
     },
   };
-  middlewares.forEach((middleware) => middleware(composer, {...container}));
+  const api = container.api ||= {...container};
+  middlewares.forEach((middleware) => middleware(composer, api));
   return container;
 }
