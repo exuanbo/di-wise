@@ -29,11 +29,13 @@ export interface RegistrationOptions {
 export class Registry {
   private _map = new Map<Token, Registration[]>();
 
-  map: RegistrationMap = this._map;
-
   constructor(
     private parent: Registry | undefined,
   ) {}
+
+  get map(): RegistrationMap {
+    return this._map;
+  }
 
   get<T>(token: Token<T>): Registration<T> | undefined {
     return (
