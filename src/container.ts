@@ -25,7 +25,9 @@ export interface ContainerOptions {
   defaultScope?: Scope;
 
   /**
-   * @internal
+   * The parent container.
+   *
+   * @defaultValue undefined
    */
   parent?: Container;
 }
