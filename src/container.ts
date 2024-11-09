@@ -238,11 +238,6 @@ export function createContainer({
         }
         if (isConstructor(token)) {
           const Class = token;
-          const metadata = getMetadata(Class);
-          if (metadata.autoRegister ?? autoRegister) {
-            container.register(Class);
-            return container.resolve(Class);
-          }
           return instantiateClass(Class);
         }
       }
@@ -259,11 +254,6 @@ export function createContainer({
         }
         if (isConstructor(token)) {
           const Class = token;
-          const metadata = getMetadata(Class);
-          if (metadata.autoRegister ?? autoRegister) {
-            container.register(Class);
-            return [container.resolve(Class)];
-          }
           return [instantiateClass(Class)];
         }
       }
@@ -275,6 +265,10 @@ export function createContainer({
 
   function instantiateClass<T extends object>(Class: Constructor<T>): T {
     const metadata = getMetadata(Class);
+    if (metadata.autoRegister ?? autoRegister) {
+      container.register(Class);
+      return container.resolve(Class);
+    }
     const provider = metadata.provider;
     const options = {scope: resolveScope(metadata.scope)};
     assert(options.scope != Scope.Container, `unregistered class ${Class.name} cannot be resolved in container scope`);
