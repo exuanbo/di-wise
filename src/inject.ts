@@ -1,6 +1,11 @@
 import {ensureInjectionContext, provideInjectionContext, useInjectionContext} from "./injection-context";
 import {Build} from "./registry";
-import type {Token, TokenList, Type} from "./token";
+import type {Constructor, Token, TokenList, Type} from "./token";
+
+/**
+ * Inject an instance of a class.
+ */
+export function inject<Instance extends object>(Class: Constructor<Instance>): Instance;
 
 /**
  * Inject an instance of a token.
@@ -22,6 +27,13 @@ export declare namespace inject {
 }
 
 inject.by = injectBy;
+
+/**
+ * Inject an instance of a class.
+ *
+ * @param thisArg - Used for resolving circular dependencies.
+ */
+export function injectBy<Instance extends object>(thisArg: any, Class: Constructor<Instance>): Instance;
 
 /**
  * Inject an instance of a token.
@@ -57,6 +69,11 @@ export function injectBy<Value>(thisArg: any, ...tokens: Token<Value>[]): Value 
 }
 
 /**
+ * Inject instances of a class with all registered providers.
+ */
+export function injectAll<Instance extends object>(Class: Constructor<Instance>): Instance[];
+
+/**
  * Inject instances of a token with all registered providers.
  *
  * The returned array will not contain `null` or `undefined` values.
@@ -80,6 +97,11 @@ export function injectAll<Value>(...tokens: Token<Value>[]): NonNullable<Value>[
  */
 export interface Injector {
   /**
+   * Inject an instance of a class.
+   */
+  inject<Instance extends object>(Class: Constructor<Instance>): Instance;
+
+  /**
    * Inject an instance of a token.
    */
   inject<Value>(token: Token<Value>): Value;
@@ -88,6 +110,11 @@ export interface Injector {
    * Inject an instance of a token, by checking each token in order until a registered one is found.
    */
   inject<Values extends unknown[]>(...tokens: TokenList<Values>): Values[number];
+
+  /**
+   * Inject instances of a class with all registered providers.
+   */
+  injectAll<Instance extends object>(Class: Constructor<Instance>): Instance[];
 
   /**
    * Inject instances of a token with all registered providers.

@@ -100,6 +100,11 @@ export function AutoRegister<This extends object>(enable = true): ClassDecorator
 }
 
 /**
+ * Decorator for injecting an instance of a class.
+ */
+export function Inject<Instance extends object>(Class: Constructor<Instance>): ClassFieldDecorator<Instance>;
+
+/**
  * Decorator for injecting an instance of a token.
  */
 export function Inject<Value>(token: Token<Value>): ClassFieldDecorator<Value>;
@@ -115,6 +120,11 @@ export function Inject<Value>(...tokens: Token<Value>[]): ClassFieldDecorator<Va
       return inject.by(this, ...tokens);
     };
 }
+
+/**
+ * Decorator for injecting instances of a class with all registered providers.
+ */
+export function InjectAll<Instance extends object>(Class: Constructor<Instance>): ClassFieldDecorator<Instance[]>;
 
 /**
  * Decorator for injecting instances of a token with all registered providers.

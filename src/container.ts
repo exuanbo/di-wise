@@ -1,7 +1,15 @@
 import {assert, expectNever} from "./errors";
 import {createResolution, provideInjectionContext, useInjectionContext} from "./injection-context";
 import {getMetadata} from "./metadata";
-import {isClassProvider, isFactoryProvider, isValueProvider, type Provider} from "./provider";
+import {
+  type ClassProvider,
+  type FactoryProvider,
+  isClassProvider,
+  isFactoryProvider,
+  isValueProvider,
+  type Provider,
+  type ValueProvider,
+} from "./provider";
 import {isBuilder, type Registration, type RegistrationOptions, Registry} from "./registry";
 import {Scope} from "./scope";
 import {type Constructor, isConstructor, type Token, type TokenList} from "./token";
@@ -76,14 +84,29 @@ export interface Container {
   register<Instance extends object>(Class: Constructor<Instance>): this;
 
   /**
-   * Register a provider with a token.
+   * Register a `ClassProvider` with a token.
    */
-  register<Value>(token: Token<Value>, provider: Provider<Value>, options?: RegistrationOptions): this;
+  register<Instance extends object>(token: Token<Instance>, provider: ClassProvider<Instance>, options?: RegistrationOptions): this;
+
+  /**
+   * Register a `FactoryProvider` with a token.
+   */
+  register<Value>(token: Token<Value>, provider: FactoryProvider<Value>, options?: RegistrationOptions): this;
+
+  /**
+   * Register a `ValueProvider` with a token.
+   */
+  register<Value>(token: Token<Value>, provider: ValueProvider<Value>): this;
 
   /**
    * Remove all registrations from the internal registry.
    */
   resetRegistry(): void;
+
+  /**
+   * Resolve a class token to an instance.
+   */
+  resolve<Instance extends object>(Class: Constructor<Instance>): Instance;
 
   /**
    * Resolve a token to an instance.
@@ -94,6 +117,11 @@ export interface Container {
    * Resolve a token to an instance, by checking each token in order until a registered one is found.
    */
   resolve<Values extends unknown[]>(...tokens: TokenList<Values>): Values[number];
+
+  /**
+   * Resolve a class token to instances with all registered providers.
+   */
+  resolveAll<Instance extends object>(Class: Constructor<Instance>): Instance[];
 
   /**
    * Resolve a token to instances with all registered providers.
