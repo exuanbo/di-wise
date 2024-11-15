@@ -90,14 +90,9 @@ export class Registry {
       registrations = [];
       this._map.set(token, registrations);
     }
-    const existing = registrations.find(
-      ({provider}) => provider === registration.provider,
-    );
-    if (existing) {
-      existing.options = {
-        ...existing.options,
-        ...registration.options,
-      };
+    const existingIndex = registrations.findIndex(({provider}) => provider === registration.provider);
+    if (existingIndex != -1) {
+      registrations[existingIndex] = registration;
     }
     else {
       registrations.push(registration);
