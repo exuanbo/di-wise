@@ -185,7 +185,7 @@ export function createContainer({
     },
 
     isRegistered(token) {
-      return registry.has(token);
+      return !!registry.get(token);
     },
 
     resetRegistry() {

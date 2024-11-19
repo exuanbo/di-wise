@@ -38,18 +38,7 @@ export class Registry {
   }
 
   get<T>(token: Token<T>): Registration<T> | undefined {
-    return (
-      internals.get(token)
-      || this._get(token)
-    );
-  }
-
-  private _get<T>(token: Token<T>): Registration<T> | undefined {
-    const registrations = this._map.get(token);
-    return (
-      registrations?.at(-1)
-      || this.parent?._get(token)
-    );
+    return this.getAll(token)?.at(-1);
   }
 
   getAll<T>(token: Token<T>): Registration<T>[] | undefined {
@@ -68,21 +57,6 @@ export class Registry {
     );
   }
 
-  has(token: Token): boolean {
-    return (
-      internals.has(token)
-      || this._has(token)
-    );
-  }
-
-  private _has(token: Token): boolean {
-    const registrations = this._map.get(token);
-    return Boolean(
-      registrations?.length
-      || this.parent?._has(token),
-    );
-  }
-
   set<T>(token: Token<T>, registration: Registration<T>): void {
     assert(!internals.has(token), `cannot register reserved token ${token.name}`);
     let registrations = this._map.get(token);
@@ -90,13 +64,7 @@ export class Registry {
       registrations = [];
       this._map.set(token, registrations);
     }
-    const existingIndex = registrations.findIndex(({provider}) => provider === registration.provider);
-    if (existingIndex != -1) {
-      registrations[existingIndex] = registration;
-    }
-    else {
-      registrations.push(registration);
-    }
+    registrations.push(registration);
   }
 }
 
