@@ -41,7 +41,7 @@
     "lint:ci": "eslint . --max-warnings 0 --cache --cache-location ./node_modules/.cache/eslint/.eslintcache",
     "format": "prettier \"**/*.{json,md,yml}\" --write --log-level warn --cache",
     "format:check": "prettier \"**/*.{json,md,yml}\" --check --cache",
-    "typedoc": "typedoc src/index.ts --includeVersion"
+    "typedoc": "typedoc src/index.ts src/middlewares/index.ts --includeVersion"
   },
   "repository": {
     "type": "git",
