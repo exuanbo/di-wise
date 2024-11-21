@@ -1,4 +1,4 @@
-import {type Middleware, type Token, Type} from "./index";
+import {type Middleware, type Token, Type} from "../index";
 
 /**
  * Middleware that makes `resolveAll` return an empty array for unregistered tokens.

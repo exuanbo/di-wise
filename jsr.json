@@ -4,7 +4,7 @@
   "version": "0.2.6",
   "exports": {
     ".": "./src/index.ts",
-    "./middlewares": "./src/middlewares.ts"
+    "./middlewares": "./src/middlewares/index.ts"
   },
   "publish": {
     "include": ["src", "!src/__tests__", "LICENSE", "README.md", "tsconfig.json"]
