@@ -21,6 +21,16 @@
         "types": "./dist/cjs/index.d.ts",
         "default": "./dist/cjs/index.js"
       }
+    },
+    "./middlewares": {
+      "import": {
+        "types": "./dist/es/middlewares.d.mts",
+        "default": "./dist/es/middlewares.mjs"
+      },
+      "require": {
+        "types": "./dist/cjs/middlewares.d.ts",
+        "default": "./dist/cjs/middlewares.js"
+      }
     }
   },
   "sideEffects": false,

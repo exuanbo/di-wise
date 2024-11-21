@@ -2,7 +2,10 @@
   "$schema": "https://jsr.io/schema/config-file.v1.json",
   "name": "@exuanbo/di-wise",
   "version": "0.2.6",
-  "exports": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./middlewares": "./src/middlewares.ts"
+  },
   "publish": {
     "include": ["src", "!src/__tests__", "LICENSE", "README.md", "tsconfig.json"]
   }

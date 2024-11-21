@@ -1,6 +1,16 @@
 import {beforeEach, describe, expect, it, vi} from "vitest";
 
-import {applyMiddleware, type Container, createContainer, inject, injectAll, type Middleware, type Token} from "..";
+import {
+  applyMiddleware,
+  type Container,
+  createContainer,
+  inject,
+  injectAll,
+  type Middleware,
+  type Token,
+  Type,
+} from "..";
+import {resolveAllSafe} from "../middlewares";
 
 describe("Middleware", () => {
   let container: Container;
@@ -77,5 +87,19 @@ describe("Middleware", () => {
       ["[A] post resolve    Wizard {wand: Wand {decorations: [Decoration {}]}}"],
       ["[B] post resolve    Wizard {wand: Wand {decorations: [Decoration {}]}}"],
     ]);
+  });
+
+  describe("resolveAllOptional", () => {
+    it("should resolve all tokens to empty array if they are not provided", () => {
+      applyMiddleware(container, [resolveAllSafe]);
+
+      const NonRegistered = Type("NonRegistered");
+      expect(container.resolveAll(NonRegistered)).toEqual([]);
+
+      const Registered = Type<string>("Registered");
+      container.register(Registered, {useValue: "Success"});
+
+      expect(container.resolveAll(Registered)).toEqual(["Success"]);
+    });
   });
 });
