@@ -74,7 +74,7 @@ export interface Container {
   /**
    * Check if a token is registered in the container or its ancestors.
    */
-  isRegistered<Value>(token: Token<Value>): boolean;
+  isRegistered(token: Token): boolean;
 
   /**
    * Register a `ClassProvider` with the token of the class itself.
@@ -140,7 +140,7 @@ export interface Container {
   /**
    * Remove a registration from the internal registry.
    */
-  unregister<Value>(token: Token<Value>): this;
+  unregister(token: Token): this;
 }
 
 /**
